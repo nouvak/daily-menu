@@ -1,37 +1,24 @@
-Tasks = new Mongo.Collection("tasks");
+MenuItems = new Mongo.Collection("menu_items");
 
 if (Meteor.isServer) {
     // This code only runs on the server
-    Meteor.publish("tasks", function () {
-        return Tasks.find();
+    Meteor.publish("menu_items", function () {
+        return MenuItems.find();
     });
 }
 
 if (Meteor.isClient) {
     // This code only runs on the client
-    Meteor.subscribe("tasks");
+    Meteor.subscribe("menu_items");
 
     Template.body.helpers({
-        tasks: function () {
-            if (Session.get("hideCompleted")) {
-                // If hide completed is checked, filter tasks
-                return Tasks.find({checked: {$ne: true}}, {sort: {createdAt: -1}});
-            } else {
-                // Otherwise, return all of the tasks
-                return Tasks.find({}, {sort: {createdAt: -1}});
-            }
-        },
-        hideCompleted: function () {
-            return Session.get("hideCompleted");
-        },
-        incompleteCount: function () {
-            return Tasks.find({checked: {$ne: true}}).count();
+        menu_items: function () {
+            return MenuItems.find({}, {sort: {createdAt: -1}});
         }
     });
 
     Template.body.events({
-        "submit .new-task": function (event) {
-            console.log("This is event", event)
+        "submit .new-menu-item": function (event) {
             // Prevent default browser form submit
             event.preventDefault();
 
@@ -39,23 +26,16 @@ if (Meteor.isClient) {
             var text = event.target.text.value;
 
             // Insert a task into the collection
-            Meteor.call("addTask", text)
+            Meteor.call("addMenuItem", text)
 
             // Clear form
             event.target.text.value = "";
-        },
-        "change .hide-completed input": function (event) {
-            Session.set("hideCompleted", event.target.checked);
         }
     });
 
-    Template.task.events({
-        "click .toggle-checked": function () {
-            // Set the checked property to the opposite of its current value
-            Meteor.call("setChecked", this._id, ! this.checked)
-        },
+    Template.menu_item.events({
         "click .delete": function () {
-            Meteor.call("deleteTask", this._id)
+            Meteor.call("deleteMenuItem", this._id)
         }
     });
 
@@ -65,33 +45,25 @@ if (Meteor.isClient) {
 }
 
 Meteor.methods({
-    addTask: function (text) {
+    addMenuItem: function (text) {
         // Make sure the user is logged in before inserting a task
         if (! Meteor.userId()) {
             throw new Meteor.Error("not-authorized");
         }
 
-        Tasks.insert({
+        MenuItems.insert({
             text: text,
             createdAt: new Date(),
             owner: Meteor.userId(),
             username: Meteor.user().username
         });
     },
-    deleteTask: function (taskId) {
-        var task = Tasks.findOne(taskId);
+    deleteMenuItem: function (taskId) {
+        var task = MenuItems.findOne(taskId);
         if (task.private && task.owner !== Meteor.userId()) {
             // If the task is private, make sure only the owner can delete it
             throw new Meteor.Error("not-authorized");
         }
-        Tasks.remove(taskId);
-    },
-    setChecked: function (taskId, setChecked) {
-        var task = Tasks.findOne(taskId);
-        if (task.private && task.owner !== Meteor.userId()) {
-            // If the task is private, make sure only the owner can check it off
-            throw new Meteor.Error("not-authorized");
-        }
-        Tasks.update(taskId, { $set: { checked: setChecked} });
+        MenuItems.remove(taskId);
     }
 });

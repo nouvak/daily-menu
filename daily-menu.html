@@ -5,17 +5,12 @@
 <body>
 <div class="container">
     <header>
-        <h1>Dnevni menu ({{incompleteCount}})</h1>
-
-        <label class="hide-completed">
-            <input type="checkbox" checked="{{hideCompleted}}" />
-            Hide Completed Tasks
-        </label>
+        <h1>Dnevni menu</h1>
 
         {{> loginButtons}}
 
         {{#if currentUser}}
-            <form class="new-task">
+            <form class="new-menu-item">
                 <input type="text" name="text" placeholder="Vnesi dnevni menu" />
             </form>
         {{/if}}
@@ -23,18 +18,16 @@
     </header>
 
     <ul>
-        {{#each tasks}}
-            {{> task}}
+        {{#each menu_items}}
+            {{> menu_item}}
         {{/each}}
     </ul>
 </div>
 </body>
 
-<template name="task">
-    <li class="{{#if checked}}checked{{/if}}">
+<template name="menu_item">
+    <li>
         <button class="delete">&times;</button>
-
-        <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
 
         <span class="text"><strong>{{username}}</strong> - {{text}}</span>
     </li>
