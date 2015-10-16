@@ -9,13 +9,14 @@
 
         {{> loginButtons}}
 
-        <button id="new-restaurant" class="btn btn-default">Vnos restavracije</button>
-
         {{#if currentUser}}
             <form class="new-menu-item">
                 <input type="text" name="text" placeholder="Vnesi dnevni menu" />
             </form>
         {{/if}}
+
+        <br/>
+        <button id="new-restaurant" class="btn btn-primary">Vnos restavracije</button>
 
     </header>
 
@@ -25,7 +26,7 @@
         {{/each}}
     </ul>
 
-    {{> restaurantModalTemplate}}
+    {{> restaurantModal}}
 
 </div>
 </body>

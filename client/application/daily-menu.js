@@ -21,8 +21,7 @@ Template.body.events({
     },
     "click #new-restaurant": function (event) {
         event.preventDefault();
-
-        $('#restaurantModal').modal('show');
+        Modal.show('restaurantModal');
     }
 });
 
