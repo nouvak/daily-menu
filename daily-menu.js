@@ -1,16 +1,5 @@
-MenuItems = new Mongo.Collection("menu_items");
-
-if (Meteor.isServer) {
-    // This code only runs on the server
-    Meteor.publish("menu_items", function () {
-        return MenuItems.find();
-    });
-}
-
 if (Meteor.isClient) {
     // This code only runs on the client
-    Meteor.subscribe("menu_items");
-
     Template.body.helpers({
         menu_items: function () {
             return MenuItems.find({}, {sort: {createdAt: -1}});
@@ -33,37 +22,7 @@ if (Meteor.isClient) {
         }
     });
 
-    Template.menu_item.events({
-        "click .delete": function () {
-            Meteor.call("deleteMenuItem", this._id)
-        }
-    });
-
     Accounts.ui.config({
         //passwordSignupFields: "USERNAME_ONLY"
     });
 }
-
-Meteor.methods({
-    addMenuItem: function (text) {
-        // Make sure the user is logged in before inserting a task
-        if (! Meteor.userId()) {
-            throw new Meteor.Error("not-authorized");
-        }
-
-        MenuItems.insert({
-            text: text,
-            createdAt: new Date(),
-            owner: Meteor.userId(),
-            username: Meteor.user().username
-        });
-    },
-    deleteMenuItem: function (taskId) {
-        var task = MenuItems.findOne(taskId);
-        if (task.private && task.owner !== Meteor.userId()) {
-            // If the task is private, make sure only the owner can delete it
-            throw new Meteor.Error("not-authorized");
-        }
-        MenuItems.remove(taskId);
-    }
-});
