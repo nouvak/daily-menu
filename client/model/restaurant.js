@@ -1,7 +1,3 @@
-Template.restaurant.events({
-    'click .add': function(e) {
-        e.preventDefault();
+Template.restaurantModalTemplate.events({
 
-        $('#animalsModal').modal('show');
-    }
 });

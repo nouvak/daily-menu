@@ -14,10 +14,15 @@ Template.body.events({
         var text = event.target.text.value;
 
         // Insert a task into the collection
-        Meteor.call("addMenuItem", text)
+        Meteor.call("addMenuItem", text);
 
         // Clear form
         event.target.text.value = "";
+    },
+    "click #new-restaurant": function (event) {
+        event.preventDefault();
+
+        $('#restaurantModal').modal('show');
     }
 });
 
